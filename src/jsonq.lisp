@@ -108,3 +108,6 @@
                                (funcall (cadr slot) object))
                else
                  collect (cons slot (slot-value object slot)))))
+
+(defmethod to-json ((cons cons) &rest args &key &allow-other-keys)
+  (apply #'arr cons args))
