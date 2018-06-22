@@ -1,5 +1,5 @@
 (defpackage :jsonq
   (:use :cl)
   (:export #:obj
-           #:to-json
+           #:json
            #:arr))

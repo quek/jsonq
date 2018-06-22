@@ -13,14 +13,16 @@
                       "{\"a\": 10, \"b\": 2, \"c\": 3}")))
 
 (defclass a ()
-  ((s1 :initform 1)
+  ((s1 :initform 1 :reader s1-of)
    (s2 :initform 2)))
 
 (fiasco:deftest slot-test ()
   (let ((a (make-instance 'a)))
-    (fiasco:is (string= (prin1-to-string (jsonq:to-json a))
+    (fiasco:is (string= (prin1-to-string (jsonq:json a))
                         "{\"s1\": 1, \"s2\": 2}"))
-    (fiasco:is (string= (prin1-to-string (jsonq:to-json a :slots '(s2)))
-                        "{\"s2\": 2}"))))
+    (fiasco:is (string= (prin1-to-string (jsonq:json a :slots '(s2)))
+                        "{\"s2\": 2}"))
+    (fiasco:is (string= (prin1-to-string (jsonq:json a :slots `((s1 s1-of))))
+                        "{\"s1\": 1}"))))
 
 (run-package-tests :interactive t)

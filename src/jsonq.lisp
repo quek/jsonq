@@ -93,41 +93,18 @@
       (nreverse values))))
 
 (defun arr (list &rest args &key &allow-other-keys)
-  (make-arr :values (mapcar (lambda (x) (apply #'to-json x args)) list)))
+  (make-arr :values (mapcar (lambda (x) (apply #'json x args)) list)))
 
-(defgeneric to-json (x &key &allow-other-keys)
+(defgeneric json (x &key &allow-other-keys)
   (:method (x &key &allow-other-keys) x))
 
-(defmethod to-json ((object standard-object)
+(defmethod json ((object standard-object)
                     &key (slots (mapcar #'sb-mop:slot-definition-name
                                         (sb-mop:class-slots (class-of object)))))
   (apply #'obj*
          (loop for slot in slots
-               collect (cons slot (slot-value object slot)))))
-
-#+nil
-(obj)
-;;⇒ {}
-
-#+nil
-(let ((c "d")
-      (obj (obj :x 1 :y 2 :a 99)))
-  (obj :a "b" c * obj * (obj "aa" "AA") :bb (obj :bb-cc "BB-CC")))
-;;⇒ {"a": 99, "d": "d", "x": 1, "y": 2, "aa": "AA", "bb": {"bbCc": "BB-CC"}}
-
-#+nil
-(defclass c1 ()
-  ((s1 :initform "c1-s1")
-   (s2 :initform "c1-s2")))
-
-#+nil
-(with-slots (s1) (make-instance 'c1)
-  (obj s1))
-;;⇒ {"s1": "c1-s1"}
-
-#+nil
-(obj :c1 (to-json (make-instance 'c1) :slots '(s2)))
-;;⇒ {"c1": {"s2": "c1-s2"}}
-
-#+nil
-(princ-to-string (obj :a 1))
+               if (consp slot)
+                 collect (cons (car slot)
+                               (funcall (cadr slot) object))
+               else
+                   collect (cons slot (slot-value object slot)))))
