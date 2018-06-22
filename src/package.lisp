@@ -2,4 +2,6 @@
   (:use :cl)
   (:export #:obj
            #:to-json
-           #:arr))
+           #:arr
+           #:read-json
+           #:read-json-from-string))

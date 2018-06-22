@@ -33,7 +33,7 @@
         for value in (arr-values arr)
         do (write-string sep stream)
            (setf sep ", ")
-           (write value :stream stream))
+           (print-value value stream))
   (write-char #\] stream))
 
 (defun symbol-to-json-key (symbol)
@@ -47,7 +47,11 @@
 
 (defgeneric print-value (value stream)
   (:method (value stream)
-    (format stream "~s" value)))
+    (format stream "~s" value))
+  (:method ((value null) stream)
+    (write-string "null" stream))
+  (:method ((value (eql t)) stream)
+    (write-string "true" stream)))
 
 (defmacro obj (&rest args)
   `(make-obj :values (normalize-obj-values ,@(%obj args))))

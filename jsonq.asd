@@ -4,5 +4,6 @@
   :serial t
   :pathname "src/"
   :components ((:file "package")
-               (:file "jsonq")))
+               (:file "jsonq")
+               (:file "reader")))
 
