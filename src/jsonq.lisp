@@ -83,7 +83,7 @@
                    (if (*obj-p car)
                        (f (obj-values (*obj-obj car)))
                        (let* ((key (car car))
-                              (value (cdr car))
+                              (value (to-json (cdr car)))
                               (cons (assoc key values :test #'equal)))
                          (if cons
                              (setf (cdr cons) value)
@@ -93,12 +93,12 @@
       (nreverse values))))
 
 (defun arr (list &rest args &key &allow-other-keys)
-  (make-arr :values (mapcar (lambda (x) (apply #'json x args)) list)))
+  (make-arr :values (mapcar (lambda (x) (apply #'to-json x args)) list)))
 
-(defgeneric json (x &key &allow-other-keys)
+(defgeneric to-json (x &key &allow-other-keys)
   (:method (x &key &allow-other-keys) x))
 
-(defmethod json ((object standard-object)
+(defmethod to-json ((object standard-object)
                     &key (slots (mapcar #'sb-mop:slot-definition-name
                                         (sb-mop:class-slots (class-of object)))))
   (apply #'obj*
@@ -107,4 +107,4 @@
                  collect (cons (car slot)
                                (funcall (cadr slot) object))
                else
-                   collect (cons slot (slot-value object slot)))))
+                 collect (cons slot (slot-value object slot)))))
