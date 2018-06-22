@@ -12,4 +12,15 @@
   (fiasco:is (string= (princ-to-string (jsonq:obj :a 1 :b 2 * (jsonq:obj :a 10 :c 3)))
                       "{\"a\": 10, \"b\": 2, \"c\": 3}")))
 
+(defclass a ()
+  ((s1 :initform 1)
+   (s2 :initform 2)))
+
+(fiasco:deftest slot-test ()
+  (let ((a (make-instance 'a)))
+    (fiasco:is (string= (prin1-to-string (jsonq:to-json a))
+                        "{\"s1\": 1, \"s2\": 2}"))
+    (fiasco:is (string= (prin1-to-string (jsonq:to-json a :slots '(s2)))
+                        "{\"s2\": 2}"))))
+
 (run-package-tests :interactive t)
