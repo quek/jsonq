@@ -107,9 +107,14 @@
                                         (sb-mop:class-slots (class-of object)))))
   (apply #'obj*
          (loop for slot in slots
-               if (consp slot)
+               if (and (consp slot)
+                       (functionp (cadr slot)))
                  collect (cons (car slot)
                                (funcall (cadr slot) object))
+               else if (consp slot)
+                      collect (cons (car slot)
+                                    (to-json (slot-value object (car slot))
+                                             :slots (cdr slot)))
                else if (slot-boundp object slot)
                       collect (cons slot (slot-value object slot)))))
 
