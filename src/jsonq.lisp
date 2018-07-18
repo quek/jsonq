@@ -51,7 +51,17 @@
   (:method ((value null) stream)
     (write-string "null" stream))
   (:method ((value (eql t)) stream)
-    (write-string "true" stream)))
+    (write-string "true" stream))
+  (:method ((value string) stream)
+    (write-char #\" stream)
+    (loop for c across value
+          do (case c
+               (#\cr (write-string "\\r" stream))
+               (#\lf (write-string "\\n" stream))
+               (#\\ (write-string "\\\\" stream))
+               (#\tab (write-string "\\t" stream))
+               (t (write-char c stream))))
+    (write-char #\" stream)))
 
 (defmacro obj (&rest args)
   `(make-obj :values (normalize-obj-values ,@(%obj args))))
