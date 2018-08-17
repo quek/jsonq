@@ -5,4 +5,5 @@
            #:arr
            #:print-value
            #:read-json
-           #:read-json-from-string))
+           #:read-json-from-string
+           #:to-lisp))

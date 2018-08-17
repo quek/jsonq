@@ -130,3 +130,13 @@
 
 (defmethod to-json ((cons cons) &rest args &key &allow-other-keys)
   (apply #'arr cons args))
+
+(defgeneric to-lisp (x)
+  (:method (x)
+    x)
+  (:method ((x cons))
+    (cons (to-lisp (car x)) (to-lisp (cdr x))))
+  (:method ((x obj))
+    (to-lisp (obj-values x)))
+  (:method ((x arr))
+    (to-lisp (arr-values x))))
