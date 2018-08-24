@@ -6,4 +6,5 @@
            #:print-value
            #:read-json
            #:read-json-from-string
-           #:to-lisp))
+           #:lisp
+           #:q))

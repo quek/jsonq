@@ -5,5 +5,6 @@
   :pathname "src/"
   :components ((:file "package")
                (:file "jsonq")
-               (:file "reader")))
+               (:file "reader")
+               (:file "q")))
 
