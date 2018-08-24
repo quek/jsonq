@@ -31,4 +31,9 @@
   (fiasco:is (string= (princ-to-string (jsonq:arr (list 1 2 3)))
                       "[1, 2, 3]")))
 
+(fiasco:deftest q-test ()
+  (let ((json (jsonq:obj :a (jsonq:arr (list 11 22 33)) :b "bb")))
+    (fiasco:is (string= "bb" (jsonq:q json :b)))
+    (fiasco:is (= 22 (jsonq:q json :a 1)))))
+
 (run-package-tests :interactive t)
