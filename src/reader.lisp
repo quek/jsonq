@@ -57,6 +57,27 @@
   (declare (ignore char))
   (read stream t nil t))
 
+(defun read-double-quote (stream char)
+  (declare (ignore char))
+  (with-output-to-string (out)
+    (loop with escape = nil
+          for c = (read-char stream t nil t)
+          if (and (char= #\" c)
+                  (not escape))
+            do (loop-finish)
+          else if (and (char= #\\ c)
+                       (not escape))
+                 do (setf escape t)
+          else if escape
+                 do (setf escape nil)
+                    (case c
+                      (#\r)
+                      (#\n (write-char #\lf out))
+                      (#\t (write-char #\tab out))
+                      (t (write-char c out)))
+          else
+            do (write-char c out))))
+
 (defun read-json (stream)
   (let ((*readtable* (copy-readtable nil))
         (*package* (find-package :jsonq-reader))
@@ -67,6 +88,7 @@
     (set-macro-character #\] (get-macro-character #\) nil))
     (set-macro-character #\: #'read-colon)
     (set-macro-character #\, #'read-comma)
+    (set-macro-character #\" #'read-double-quote)
     (read stream)))
 
 (defun read-json-from-string (string)

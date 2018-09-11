@@ -36,4 +36,8 @@
     (fiasco:is (string= "bb" (jsonq:q json :b)))
     (fiasco:is (= 22 (jsonq:q json :a 1)))))
 
+(fiasco:deftest read-test ()
+  (fiasco:is (string= (format nil "a~cb" #\lf)
+                      (jsonq:read-json-from-string "\"a\\nb\""))))
+
 (run-package-tests :interactive t)
