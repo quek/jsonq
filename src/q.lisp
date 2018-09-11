@@ -2,14 +2,22 @@
 
 (defun q (json &rest properties)
   (if (null properties)
-      json
+      (values json t)
       (let ((property (car properties)))
         (apply #'q
                (etypecase property
                  (integer (etypecase json
-                            (arr (nth property (arr-values json)))))
+                            (arr (unless (< property (length (arr-values json)))
+                                   (return-from q (values nil nil)))
+                             (nth property (arr-values json)))))
                  (symbol (etypecase json
-                           (obj (cdr (assoc property (obj-values json) :test #'string-equal)))))
+                           (obj (let ((x (assoc property (obj-values json) :test #'string-equal)))
+                                  (unless x
+                                    (return-from q (values nil nil)))
+                                  (cdr x)))))
                  (string (typecase json
-                           (obj (cdr (assoc property (obj-values json) :test #'equal))))))
+                           (obj (let ((x (assoc property (obj-values json) :test #'equal)))
+                                  (unless x
+                                    (return-from q (values nil nil)))
+                                  (cdr x))))))
                (cdr properties)))))
