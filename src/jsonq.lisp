@@ -56,6 +56,7 @@
     (write-char #\" stream)
     (loop for c across value
           do (case c
+               (#\" (write-string "\\\"" stream))
                (#\cr (write-string "\\r" stream))
                (#\lf (write-string "\\n" stream))
                (#\\ (write-string "\\\\" stream))
