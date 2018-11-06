@@ -1,6 +1,7 @@
 (defpackage :jsonq
   (:use :cl)
   (:export #:obj
+           #:obj*
            #:to-json
            #:arr
            #:print-value
